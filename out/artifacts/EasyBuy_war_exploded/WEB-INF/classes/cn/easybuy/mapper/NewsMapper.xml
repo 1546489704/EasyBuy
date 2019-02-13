@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace：命名空间，用于隔离sql，还有一个很重要的作用，后面会讲 -->
+<mapper namespace="cn.easybuy.mapper.NewsMapper">
+
+    <insert id="add" parameterType="cn.easybuy.entity.News" >
+         INSERT into easybuy_news(title,content,createTime) values( #{title} , #{content} , #{createTime} )
+    </insert>
+
+    <update id="update" parameterType="cn.easybuy.entity.News">
+       update easybuy_news
+    <set>
+        <if test="title != null and title != ''">
+            title=#{title}
+        </if>
+        <if test="content != null and content != ''">
+            content=#{content}
+        </if>
+    </set>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="int">
+      delete from easybuy_news where id = #{id}
+    </delete>
+
+    <select id="getNewsById" resultType="cn.easybuy.entity.News" parameterType="int">
+       select * from easybuy_news where id = #{id}
+    </select>
+
+    <select id="queryNewsList" resultType="cn.easybuy.entity.News" parameterType="cn.easybuy.param.NewsParams">
+          select id,title,content,createTime FROM easybuy_news
+          <where>
+              <if test="title != null and title != ''">
+                  and title like CONCAT('%',#{title} ,'%')
+              </if>
+              order by #{sort}  limt #{startIndex} ,#{pageSize}
+          </where>
+    </select>
+
+    <select id="queryNewsCount" resultType="java.lang.Integer" parameterType="cn.easybuy.param.NewsParams">
+          select count(*) as count FROM easybuy_news
+          <where>
+              <if test="title != null and title != ''">
+                  and title like concat('%',#{title} ,'%')
+              </if>
+          </where>
+    </select>
+</mapper>

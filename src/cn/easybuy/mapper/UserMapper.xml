@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace：命名空间，用于隔离sql，还有一个很重要的作用，后面会讲 -->
+<mapper namespace="cn.easybuy.mapper.UserMapper">
+    
+    <insert id="add"  parameterType="cn.easybuy.entity.User">
+      INSERT into easybuy_user(loginName,userName,password,sex,identityCode,email,mobile)
+      values(#{loginName} ,#{userName} ,#{password} ,#{sex} ,#{identityCode} ,#{email} ,#{mobile} )
+    </insert>
+
+    <update id="update" parameterType="cn.easybuy.entity.User">
+          UPDATE easybuy_user
+          <set>
+              <if test="loginName != null and loginName != ''">
+                  loginName=#{loginName} ,
+              </if>
+              <if test="userName != null and userName != ''">
+                  userName =#{userName} ,
+              </if>
+              <if test="type != null">
+                  type=#{type} ,
+              </if>
+              <if test="sex != null">
+                  sex=#{sex} ,
+              </if>
+              <if test="identityCode != null and identityCode != ''">
+                  identityCode=#{identityCode} ,
+              </if>
+              <if test="email != null and email != ''">
+                  email=#{email} ,
+              </if>
+              <if test="mobile != null and mobile != ''">
+                  mobile=#{mobile}
+              </if>
+          </set>
+           WHERE id =#{id}
+    </update>
+
+    <!--登入-->
+    <select id="getUser" resultType="cn.easybuy.entity.User">
+     select id,loginName,userName,password,sex,identityCode,email,mobile,type from easybuy_user
+    <trim prefix="where" suffixOverrides="and|or" prefixOverrides="and">
+        <if test="id != null">
+            and id=#{id}
+        </if>
+        <if test="loginName != null and loginName != ''">
+            and loginName=#{loginName}
+        </if>
+    </trim>
+    </select>
+
+     <!--删除-->
+    <delete id="deleteUserById">
+           delete from easybuy_user where id = #{id}
+    </delete>
+    <!--查询所有用户-->
+    <select id="getUserList" resultType="cn.easybuy.entity.User">
+       select id,loginName,password,userName,sex,identityCode,email,mobile,type from easybuy_user where 1=1
+       limit #{currentPageNo} ,#{pageSize}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+     select count(1) count from easybuy_user where 1=1
+    </select>
+</mapper>
